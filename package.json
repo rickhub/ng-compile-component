@@ -1,8 +1,17 @@
 {
-  "name": "ng-compile-component",
-  "version": "1.0.1",
-  "dscription": "AngularJS component for compiling components dynamically.",
-  "author": "Ricard Derheim <rderheim@derheim-software.de>",
-  "main": "ng-compile-component.js",
-  "license": "MIT"
+	"name": "ng-compile-component",
+	"version": "1.0.0",
+	"dscription": "AngularJS component for compiling components dynamically.",
+	"keywords": ["AngularJS", "Components", "Compile"],
+	"author": "Ricard Derheim <rderheim@derheim-software.de>",
+	"main": "ng-compile-component.js",
+	"repository":{
+		"type" : "git",
+  	"url" : "https://github.com/rickhub/ng-compile-component.git"
+  },
+	"bugs":{
+		"url" : "https://github.com/rickhub/ng-compile-component/issues",
+		"email" : "rderheim@derheim-software.de"
+	},
+	"license": "MIT"
 }
