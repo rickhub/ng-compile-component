@@ -1,0 +1,8 @@
+{
+  "name": "ng-compile-component",
+  "version": "1.0.1",
+  "dscription": "AngularJS component for compiling components dynamically.",
+  "author": "Ricard Derheim <rderheim@derheim-software.de>",
+  "main": "ng-compile-component.js",
+  "license": "MIT"
+}
