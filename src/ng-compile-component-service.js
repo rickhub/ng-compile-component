@@ -1,4 +1,4 @@
-angular.module('rckd.utils').factory('ngCompileComponentService', [
+angular.module('rckd.utils').factory('CompileComponentService', [
 	'$rootScope',
 	'$compile',
 	function($rootScope, $compile){

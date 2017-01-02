@@ -5,10 +5,10 @@ angular.module('rckd.utils').component('ngCompileComponent', {
 	},
 	controller:[
 		'$element',
-		'ngCompileComponentService',
-		function($element, ngCompileComponentService){
+		'CompileComponentService',
+		function($element, CompileComponentService){
 			this.$onInit = function(){
-				$element.append(ngCompileComponentService.compile(
+				$element.append(CompileComponentService.compile(
 					this.component,
 					this.bindings
 				));
