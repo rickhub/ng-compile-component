@@ -1,59 +1,84 @@
-angular.module('rckd.utils').directive('ngCompileComponent', [
+angular.module('rckd.utils')
+
+.factory('ngCompileComponentService', [
 	'$rootScope',
 	'$compile',
 	function($rootScope, $compile){
 
 		/**
-		 * Transforms "myComponentName" to "my-component-name".
-		 *
-		 * @param {String} string
+		 * Transforms 'myFancyComponent' to 'my-fancy-component'.
+		 * 
+		 * @param  {String} string
 		 * @return {String}
 		 */
 		function toLowerDash(string){
 			return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 		}
 
-		/**
-		 * Builds the component's html:
-		 *
-		 * <my-component
-		 *	two-way='$ctrl["twoWay"]'
-		 *	one-way='$ctrl["oneWay"]'
-		 *	string='{{ $ctrl["string"] }}'
-		 * ></my-component>
-		 *
-		 * @param {String} component
-		 * @return {Object} bindings
-		 * @return {String}
-		 */
-		function buildHtml(component, bindings){
-			var tag = toLowerDash(component);
-			var attrs = '';
-			var prop = null;
-			for(prop in bindings){
-				attrs += ' ' + toLowerDash(prop) + '=\'' + (
-					typeof bindings[prop] === 'string'
-					? '{{ $ctrl["' + prop + '"] }}'
-					: '$ctrl["' + prop + '"]'
-				) + '\'';
-			}
-			return '<' + tag + attrs + '></' + tag + '>';
-		}
-
 		return{
-			restrict: 'E',
-			scope:{
-				component: '=',
-				bindings: '='
+
+			/**
+			 * Builds the component's html like:
+			 *
+			 * <my-fancy-component
+			 * 	one-way='$ctrl["one-way"]'
+			 * 	two-way='$ctrl["two-way"]'
+			 * 	string='{{ $ctrl["string"] }}'
+			 * ></my-fancy-component>
+			 * 
+			 * @param  {String} component
+			 * @param  {Object} bindings
+			 * @return {String}
+			 */
+			render: function(component, bindings){
+				var tag = toLowerDash(component);
+				var attrs = '';
+				var prop = null;
+				for(prop in bindings){
+					attrs += ' ' + toLowerDash(prop) + '=\'' + (
+						typeof bindings[prop] === 'string'
+						? '{{ $ctrl["' + prop + '"] }}'
+						: '$ctrl["' + prop + '"]'
+					) + '\'';
+				}
+				return '<' + tag + attrs + '></' + tag + '>';
 			},
-			link: function(scope, element){
-				var elementScope = angular.extend($rootScope.$new(), {
-					$ctrl: scope.bindings
+
+			/**
+			 * Compiles the component.
+			 * 
+			 * @param  {String} component
+			 * @param  {Object} bindings
+			 * @return {Object}
+			 */
+			compile: function(component, bindings){
+				var html = this.render(component, bindings);
+				var scope = angular.extend($rootScope.$new(), {
+					$ctrl: bindings
 				});
-				var html = buildHtml(scope.component, scope.bindings);
-				element.append($compile(html)(elementScope));
+				return $compile(html)(scope);
 			}
+
 		};
 
 	}
-]);
+])
+
+.component('ngCompileComponent', {
+	bindings:{
+		component: '=',
+		bindings: '='
+	},
+	controller:[
+		'$element',
+		'ngCompileComponentService',
+		function($element, ngCompileComponentService){
+			this.$onInit = function(){
+				$element.append(ngCompileComponentService.compile(
+					this.component,
+					this.bindings
+				));
+			};
+		}
+	]
+});
