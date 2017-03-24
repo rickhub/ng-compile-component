@@ -1,28 +1,28 @@
 {
-	"name": "ng-compile-component",
-	"version": "2.0.0",
-	"dscription": "AngularJS component for compiling components dynamically.",
-	"keywords": [
-		"AngularJS",
-		"Components",
-		"Compile"
-	],
-	"author": "Ricard Derheim <rderheim@derheim-software.de>",
-	"main": "ng-compile-component.js",
-	"files": [
-		"README.md",
-		"LICENSE",
-		"src/module.js",
-		"src/ng-compile-component-service.js",
-		"src/ng-compile-component.js"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/rickhub/ng-compile-component.git"
-	},
-	"bugs": {
-		"url": "https://github.com/rickhub/ng-compile-component/issues",
-		"email": "rderheim@derheim-software.de"
-	},
-	"license": "MIT"
+  "name": "ng-compile-component",
+  "version": "2.1.0",
+  "dscription": "AngularJS component for compiling components dynamically.",
+  "keywords": [
+    "AngularJS",
+    "Components",
+    "Compile"
+  ],
+  "author": "Ricard Derheim <rderheim@derheim-software.de>",
+  "main": "ng-compile-component.js",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "src/module.js",
+    "src/ng-compile-component-service.js",
+    "src/ng-compile-component.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rickhub/ng-compile-component.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rickhub/ng-compile-component/issues",
+    "email": "rderheim@derheim-software.de"
+  },
+  "license": "MIT"
 }
