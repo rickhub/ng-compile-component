@@ -12,16 +12,9 @@ npm i ng-compile-component
 
 ---
 
-### Include `module.js`
-Only if not included already.
+### Include js
 ```html
-<script src='./node_modules/ng-compile-component/src/module.js'></script>
-```
-
-### Include `ng-compile-component.js`
-```html
-<script src='./node_modules/ng-compile-component/src/ng-compile-component-service.js'></script>
-<script src='./node_modules/ng-compile-component/src/ng-compile-component.js'></script>
+<script src='./node_modules/ng-compile-component/dirs/ng-compile-component.min.js'></script>
 ```
 
 ### Add the dependency
