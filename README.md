@@ -14,7 +14,7 @@ npm i ng-compile-component
 
 ### Include js
 ```html
-<script src='./node_modules/ng-compile-component/dirs/ng-compile-component.min.js'></script>
+<script src='./node_modules/ng-compile-component/dist/ng-compile-component.min.js'></script>
 ```
 
 ### Add the dependency
