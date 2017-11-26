@@ -46,7 +46,18 @@ this.bindings = {
     buttons:{
         no: true
         yes: true
-    }
+    },
+    custom: 'text'
+};
+
+// this is optional
+this.config = {
+  title: '@',
+  message: '=',
+  custom: function(attr, value){
+    // render attribute
+    return attr + '=' + value;
+  }
 };
 ```
 
@@ -55,6 +66,7 @@ Inside of your html:
 <ng-compile-component
     component='$ctrl.component'
     bindings='$ctrl.bindings'
+    config='$ctrl.config'
 ></ng-compile-component>
 ```
 
@@ -62,8 +74,9 @@ This results in:
 ```html
 <message-box
   title='{{ $ctrl["title"] }}'
-  message='{{ $ctrl["message"] }}'
+  message='$ctrl["message"]'
   buttons='$ctrl["buttons"]'
+  custom=text
 ></message-box>
 ```
 ---
@@ -79,6 +92,10 @@ Define values inline:
         yes: true,
         no: tru
       }
+    }"
+    config="{
+      title: '@',
+      message: '='
     }"
 ></ng-compile-component>
 ```
