@@ -35,6 +35,9 @@ Attributes:
 > `bindings`
 > An object which represents the bindings of the target-component.
 
+> `config` (optional)
+> Allows you to define or override the binding types for more control.
+
 ### Example
 
 Inside of your component's controller:
