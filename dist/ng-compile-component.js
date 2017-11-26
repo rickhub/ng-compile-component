@@ -1,94 +1,103 @@
-angular.module('rckd.utils', [])
-	.factory('CompileComponentService', [
-		'$rootScope',
-		'$compile',
-		function ($rootScope, $compile)
-		{
+angular.module('rckd.utils', []);
+
+angular.module('rckd.utils').factory('CompileComponentService', [
+	'$rootScope',
+	'$compile',
+	function($rootScope, $compile){
+		const stdExpr = attr => attr + '=\'$ctrl["' + attr + '"]\'';
+		const strExpr = attr => attr + '=\'{{ $ctrl["' + attr + '"] }}\'';
+		const fnExpr = attr => attr + '=\'$ctrl["' + attr + '"]()\'';
+
+		const factories = {
+			'=': stdExpr,
+			'<': stdExpr,
+			'>': stdExpr,
+			'@': strExpr,
+			'&': fnExpr,
+		};
+
+		const toLowerDash = function(string){
+			return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+		}
+
+		return{
 
 			/**
-			 * Transforms 'myFancyComponent' to 'my-fancy-component'.
-			 *
-			 * @param  {String} string
+			 * @param  {String} attribute
+			 * @param  {Object} value
+			 * @param  {Object} config
+			 * @return {Function}
+			 */
+			resolveBindingFactory(attribute, value, config = {}){
+				let attrConfig = config[attribute];
+				if(attrConfig){
+					if(typeof attrConfig === 'function'){
+						return attrConfig;
+					}
+					return factories[attrConfig];
+				}
+				return factories[typeof value !== 'function' ? '=' : '&'];
+			},
+
+			/**
+			 * @param  {String} component
+			 * @param  {Object} bindings
+			 * @param  {Object} config
 			 * @return {String}
 			 */
-			function toLowerDash(string)
-			{
-				return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-			}
+			buildHtml(component, bindings, config = {}){
+				const attrs = [];
+				for(const attribute in bindings){
+					const value = bindings[attribute];
+					const factory = this.resolveBindingFactory(attribute, value, config);
+					attrs.push(factory(attribute, value));
+				}
+				return '<' + component + ' ' + attrs.join(' ') + '></' + component + '>';
+			},
 
-			return {
+			/**
+			 * @param  {Stromg} component
+			 * @param  {Object} bindings
+			 * @param  {Object} config
+			 * @return {Element}
+			 */
+			compile(component, bindings, config = {}){
+				const html = this.buildHtml(toLowerDash(component), bindings, config);
+				const scope = angular.extend($rootScope.$new(), {
+					$ctrl: bindings
+				});
+				return $compile(html)(scope);
+			},
 
-				/**
-				 * Builds the component's html like:
-				 *
-				 * <my-fancy-component
-				 *    one-way='$ctrl["one-way"]'
-				 *    two-way='$ctrl["two-way"]'
-				 *    string='{{ $ctrl["string"] }}'
-				 * ></my-fancy-component>
-				 *
-				 * @param  {String} component
-				 * @param  {Object} bindings
-				 * @return {String}
-				 */
-				render: function (component, bindings)
-				        {
-					        var tag = toLowerDash(component);
-					        var attrs = '';
-					        var prop = null;
-					        for (prop in bindings)
-					        {
-						        attrs += ' ' + toLowerDash(prop) + '=\'' + (
-								        typeof bindings[prop] === 'string'
-									        ? '{{ $ctrl["' + prop + '"] }}'
-									        : '$ctrl["' + prop + '"]'
-							        ) + '\'';
-					        }
-					        return '<' + tag + attrs + '></' + tag + '>';
-				        },
+		};
+	}
+]);
 
-				/**
-				 * Compiles the component.
-				 *
-				 * @param  {String} component
-				 * @param  {Object} bindings
-				 * @return {Object}
-				 */
-				compile: function (component, bindings)
-				         {
-					         var html = this.render(component, bindings);
-					         var scope = angular.extend($rootScope.$new(), {
-						         $ctrl: bindings
-					         });
-					         return $compile(html)(scope);
-				         }
-
+angular.module('rckd.utils').component('ngCompileComponent', {
+	bindings:{
+		component: '<',
+		bindings: '<',
+    config: '<',
+	},
+	controller:[
+		'$scope',
+		'$element',
+		'CompileComponentService',
+		function($scope, $element, CompileComponentService){
+			this.$onChanges = function(changes){
+				if(
+					changes.component ||
+					(changes.bindings && changes.bindings.currentValue !== changes.bindings.previousValue)
+					(changes.config && changes.config.currentValue !== changes.config.previousValue)
+				){
+					$element.html('');
+					$element.append(CompileComponentService.compile(
+						this.component,
+						this.bindings,
+            this.config,
+					));
+				}
 			};
-
 		}
-	])
-	.component('ngCompileComponent', {
-		bindings:   {
-			component: '<',
-			bindings:  '<'
-		},
-		controller: [
-			'$scope',
-			'$element',
-			'CompileComponentService',
-			function ($scope, $element, CompileComponentService)
-			{
-				this.$onChanges = function (changes)
-				{
-					if (changes.component || (changes.bindings && changes.bindings.currentValue !== changes.bindings.previousValue))
-					{
-						$element.html('');
-						$element.append(CompileComponentService.compile(
-							this.component,
-							this.bindings
-						));
-					}
-				};
-			}
-		]
-	});
+	]
+});

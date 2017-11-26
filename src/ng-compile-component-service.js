@@ -2,62 +2,71 @@ angular.module('rckd.utils').factory('CompileComponentService', [
 	'$rootScope',
 	'$compile',
 	function($rootScope, $compile){
+		const stdExpr = attr => attr + '=\'$ctrl["' + attr + '"]\'';
+		const strExpr = attr => attr + '=\'{{ $ctrl["' + attr + '"] }}\'';
+		const fnExpr = attr => attr + '=\'$ctrl["' + attr + '"]()\'';
 
-		/**
-		 * Transforms 'myFancyComponent' to 'my-fancy-component'.
-		 * 
-		 * @param  {String} string
-		 * @return {String}
-		 */
-		function toLowerDash(string){
+		const factories = {
+			'=': stdExpr,
+			'<': stdExpr,
+			'>': stdExpr,
+			'@': strExpr,
+			'&': fnExpr,
+		};
+
+		const toLowerDash = function(string){
 			return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 		}
 
 		return{
 
 			/**
-			 * Builds the component's html like:
-			 *
-			 * <my-fancy-component
-			 * 	one-way='$ctrl["one-way"]'
-			 * 	two-way='$ctrl["two-way"]'
-			 * 	string='{{ $ctrl["string"] }}'
-			 * ></my-fancy-component>
-			 * 
-			 * @param  {String} component
-			 * @param  {Object} bindings
-			 * @return {String}
+			 * @param  {String} attribute
+			 * @param  {Object} value
+			 * @param  {Object} config
+			 * @return {Function}
 			 */
-			render: function(component, bindings){
-				var tag = toLowerDash(component);
-				var attrs = '';
-				var prop = null;
-				for(prop in bindings){
-					attrs += ' ' + toLowerDash(prop) + '=\'' + (
-						typeof bindings[prop] === 'string'
-						? '{{ $ctrl["' + prop + '"] }}'
-						: '$ctrl["' + prop + '"]'
-					) + '\'';
+			resolveBindingFactory(attribute, value, config = {}){
+				let attrConfig = config[attribute];
+				if(attrConfig){
+					if(typeof attrConfig === 'function'){
+						return attrConfig;
+					}
+					return factories[attrConfig];
 				}
-				return '<' + tag + attrs + '></' + tag + '>';
+				return factories[typeof value !== 'function' ? '=' : '&'];
 			},
 
 			/**
-			 * Compiles the component.
-			 * 
 			 * @param  {String} component
 			 * @param  {Object} bindings
-			 * @return {Object}
+			 * @param  {Object} config
+			 * @return {String}
 			 */
-			compile: function(component, bindings){
-				var html = this.render(component, bindings);
-				var scope = angular.extend($rootScope.$new(), {
+			buildHtml(component, bindings, config = {}){
+				const attrs = [];
+				for(const attribute in bindings){
+					const value = bindings[attribute];
+					const factory = this.resolveBindingFactory(attribute, value, config);
+					attrs.push(factory(attribute, value));
+				}
+				return '<' + component + ' ' + attrs.join(' ') + '></' + component + '>';
+			},
+
+			/**
+			 * @param  {Stromg} component
+			 * @param  {Object} bindings
+			 * @param  {Object} config
+			 * @return {Element}
+			 */
+			compile(component, bindings, config = {}){
+				const html = this.buildHtml(toLowerDash(component), bindings, config);
+				const scope = angular.extend($rootScope.$new(), {
 					$ctrl: bindings
 				});
 				return $compile(html)(scope);
-			}
+			},
 
 		};
-
 	}
 ]);
