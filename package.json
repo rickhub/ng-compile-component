@@ -1,6 +1,6 @@
 {
   "name": "ng-compile-component",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "dscription": "AngularJS component for compiling components dynamically.",
   "keywords": [
     "AngularJS",
