@@ -93,7 +93,7 @@ Define values inline:
       message: 'You wanna compile something?',
       buttons:{
         yes: true,
-        no: tru
+        no: true
       }
     }"
     config="{
