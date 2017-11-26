@@ -2,9 +2,14 @@ angular.module('rckd.utils').factory('CompileComponentService', [
 	'$rootScope',
 	'$compile',
 	function($rootScope, $compile){
-		const stdExpr = attr => attr + '=\'$ctrl["' + attr + '"]\'';
-		const strExpr = attr => attr + '=\'{{ $ctrl["' + attr + '"] }}\'';
-		const fnExpr = attr => attr + '=\'$ctrl["' + attr + '"]()\'';
+
+		const toLowerDash = function(string){
+			return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+		}
+    
+		const stdExpr = attr => toLowerDash(attr) + '=\'$ctrl["' + attr + '"]\'';
+		const strExpr = attr => toLowerDash(attr) + '=\'{{ $ctrl["' + attr + '"] }}\'';
+		const fnExpr = attr => toLowerDash(attr) + '=\'$ctrl["' + attr + '"]()\'';
 
 		const factories = {
 			'=': stdExpr,
@@ -13,10 +18,6 @@ angular.module('rckd.utils').factory('CompileComponentService', [
 			'@': strExpr,
 			'&': fnExpr,
 		};
-
-		const toLowerDash = function(string){
-			return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-		}
 
 		return{
 
