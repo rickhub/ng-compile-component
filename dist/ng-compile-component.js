@@ -8,7 +8,7 @@ angular.module('rckd.utils').factory('CompileComponentService', [
 		const toLowerDash = function(string){
 			return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 		}
-    
+
 		const stdExpr = attr => toLowerDash(attr) + '=\'$ctrl["' + attr + '"]\'';
 		const strExpr = attr => toLowerDash(attr) + '=\'{{ $ctrl["' + attr + '"] }}\'';
 		const fnExpr = attr => toLowerDash(attr) + '=\'$ctrl["' + attr + '"]()\'';
@@ -88,7 +88,7 @@ angular.module('rckd.utils').component('ngCompileComponent', {
 			this.$onChanges = function(changes){
 				if(
 					changes.component ||
-					(changes.bindings && changes.bindings.currentValue !== changes.bindings.previousValue)
+					(changes.bindings && changes.bindings.currentValue !== changes.bindings.previousValue) ||
 					(changes.config && changes.config.currentValue !== changes.config.previousValue)
 				){
 					$element.html('');
