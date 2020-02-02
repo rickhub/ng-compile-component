@@ -12,7 +12,7 @@ angular.module('rckd.utils').component('ngCompileComponent', {
 			this.$onChanges = function(changes){
 				if(
 					changes.component ||
-					(changes.bindings && changes.bindings.currentValue !== changes.bindings.previousValue)
+					(changes.bindings && changes.bindings.currentValue !== changes.bindings.previousValue) ||
 					(changes.config && changes.config.currentValue !== changes.config.previousValue)
 				){
 					$element.html('');
