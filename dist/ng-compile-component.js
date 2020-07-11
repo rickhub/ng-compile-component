@@ -78,7 +78,7 @@ angular.module('rckd.utils').component('ngCompileComponent', {
 	bindings:{
 		component: '<',
 		bindings: '<',
-    config: '<',
+		config: '<'
 	},
 	controller:[
 		'$scope',
@@ -95,7 +95,7 @@ angular.module('rckd.utils').component('ngCompileComponent', {
 					$element.append(CompileComponentService.compile(
 						this.component,
 						this.bindings,
-            this.config,
+						this.config
 					));
 				}
 			};
